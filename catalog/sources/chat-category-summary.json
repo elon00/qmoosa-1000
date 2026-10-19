@@ -1,0 +1,27 @@
+{
+  "categories": [
+    "Layer 1 blockchains",
+    "Layer 2 scaling",
+    "Cross-chain interoperability",
+    "DeFi and lending",
+    "Payments and x402",
+    "Wallets and identity",
+    "Post-quantum cryptography and security",
+    "AI agentic finance",
+    "DAOs and governance",
+    "Tokenomics and stablecoins",
+    "NFTs and digital assets",
+    "Real-world assets and tokenization",
+    "Privacy and zero knowledge",
+    "Oracles and data",
+    "DePIN and decentralized compute",
+    "Gaming and metaverse",
+    "Developer infrastructure",
+    "Observability and DevSecOps",
+    "Social and community",
+    "Research and experimental"
+  ],
+  "reported_names_per_category": 50,
+  "actual_name_list_provided": false,
+  "source": "User-provided category summary; no names or artifact URLs were embedded"
+}

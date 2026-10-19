@@ -1,0 +1,18 @@
+{
+  "canonical": {
+    "source": "Antigravity v3.0.0",
+    "names": 1000
+  },
+  "v2": {
+    "shared_names": 225,
+    "reference_only_names": 775
+  },
+  "portfolio_catalog": {
+    "shared_names": 50,
+    "reference_only_names": 950
+  },
+  "chat_category_summary": {
+    "actual_names_provided": false
+  },
+  "execution_policy": "Use exactly 1000 v3 names. Preserve other catalogs as references. Do not invent aliases."
+}
