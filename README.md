@@ -10,6 +10,7 @@ Python 3.10+, Git, and Windows x64 or Linux x64:
 
 ```text
 python tools/security_guard.py install
+git -C path/to/project add -- reviewed-file.ext
 python tools/security_guard.py scan --repo path/to/project
 python -m unittest discover -s tests -v
 ```
