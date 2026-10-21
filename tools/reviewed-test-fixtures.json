@@ -299,7 +299,7 @@
       "path": "tests/backend-boundaries.test.ts",
       "line": 128,
       "blob_sha256": "6de5c8a08303cfe1089cda72dda083cfb1b07d6e6f31781bf774c0de30f42580",
-      "reason": "Reviewed fixed credential-canary at reserved example.invalid in an RPC rejection test. It is never a live credential; checkedSolanaRpcUrl rejects the URL before any connection. Exact whole-file hash and line only."
+      "reason": "Reviewed non-secret negative fixture in elon00/jarsol-web4-automaton PR 11, commit bbecbf46c2dec8d97709d0d02ba052449cd3c002 (cross-repository guard policy). Fixed credential-canary on reserved example.invalid; rejected before connection. Exact whole-file hash and line only."
     }
   ]
 }
