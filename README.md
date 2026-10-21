@@ -1,6 +1,24 @@
 # QMOOSA-1000 Flagship
 
-One portfolio hub for 1,000 canonical project repositories.
+Portfolio hub for the canonical project catalog and reusable credential safeguards. The account-wide hardening mission inventories 1,823 owned repositories; the catalog below retains the original 1,000-project plan.
+
+The working flagship demo is [Plonky](https://elon00.github.io/plonky/). Its [verified shared release](https://github.com/elon00/plonky/tree/7d65b4a5a98b2095ab638b780e445e6917ba05a1) was built and self-checked in 925 repositories. These share one implementation; separate product names do not establish independently implemented or commercially validated products.
+
+## Protect future changes
+
+Python 3.10+, Git, and Windows x64 or Linux x64:
+
+```text
+python tools/security_guard.py install
+python tools/security_guard.py scan --repo path/to/project
+python -m unittest discover -s tests -v
+```
+
+The guard scans available Git history and staged changes, produces redacted findings, and refuses incomplete scans. It does not change visibility. See [credential handling and publication boundaries](docs/SECURITY.md). CI runs the guard and regression tests on Linux and Windows with pinned Actions and scanner archives.
+
+Production hardening remains an active mission. Individual applications need their own build, deployment, security and customer acceptance evidence. Repository visibility and passing automated checks do not establish commercial readiness.
+
+## Original provisioning plan
 
 Execution uses the actual Antigravity v3.0.0 manifest. The older v2 and portfolio catalogs are
 preserved under catalog/sources as reference catalogs. The user-provided 20-category summary
@@ -32,15 +50,13 @@ created by this initialization run. A basic scaffold is not a finished cryptocur
 - catalog/reference-comparison.json: differences among the reference catalogs.
 - project-template/: the exact starter files copied into new repositories.
 
-## Run locally
+## Historical catalog preview
 
 Python 3.10+ and a gh auth session or GH_TOKEN are required. Never store credentials here.
 
 Default preview:
     python tools/provision.py
 
-Start or resume the authorized run:
-    python tools/provision.py --execute --limit 1000
-
-The worker checks repository identity, pins the template branch, verifies file hashes,
-preserves existing repositories, and stops on API errors or rate-limit rejection.
+The original initializer is retained for reproducibility. Its private/scaffold settings
+describe the creation plan, not current account visibility. Current hardening does not
+create another set of repositories. Use the security guard above for ongoing checks.
