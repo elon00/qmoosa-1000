@@ -1,0 +1,25 @@
+{
+  "entries": [
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "sdk-tests/client.test.mjs",
+      "line": 59,
+      "blob_sha256": "ec859e749c5b88949e3d79ddad197823396f60ff737b95dd14cb37b3189faa1a",
+      "reason": "Reviewed negative test rejects fixed dummy basic-auth URL at reserved example.com; source matches verified public release 7d65b4a5a98b2095ab638b780e445e6917ba05a1."
+    },
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "tests/test_app.py",
+      "line": 72,
+      "blob_sha256": "ead617be35af785ccaeb5304b13396111753b9acc464cdb5d661aa94d7fa1b2e",
+      "reason": "Reviewed negative test rejects fixed dummy basic-auth URL at reserved example.com; source matches verified public release 7d65b4a5a98b2095ab638b780e445e6917ba05a1."
+    },
+    {
+      "rule": "generic-api-key",
+      "path": ".env.production.example",
+      "line": 5,
+      "blob_sha256": "e69aa4ee02c7f161b81427f32ee0b3610a710e7f18fc2514eb5c15acba426711",
+      "reason": "Reviewed blank access-token example; upstream generic rule captures the next non-secret rate-limit setting across a newline. Exact verified public source hash required."
+    }
+  ]
+}

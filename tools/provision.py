@@ -18,8 +18,28 @@ BRANCH = "qmoosa-scaffold"
 
 
 def file_map(folder):
-    return {p.relative_to(folder).as_posix():p.read_text(encoding="utf-8-sig")
-            for p in folder.rglob("*") if p.is_file()}
+    folder = Path(folder)
+    if folder.is_symlink():
+        raise q.Error("Refusing to export a symlinked source directory.")
+    ignored = {".git", ".local", ".venv", "venv", "__pycache__", "node_modules", "target",
+               ".aws", ".ssh", ".gnupg", ".azure", ".config", ".idea", ".vscode"}
+    result = {}
+    for path in folder.rglob("*"):
+        relative = path.relative_to(folder)
+        if any(part in ignored for part in relative.parts):
+            continue
+        if path.is_symlink():
+            raise q.Error("Refusing to export a symlink: " + relative.as_posix())
+        if not path.is_file():
+            continue
+        name = path.name.lower()
+        example = name.endswith((".example", ".sample", ".template"))
+        if ((name == ".env" or name.startswith(".env.")) and not example
+                or name in {".npmrc", ".pypirc", "credentials", "credentials.json", "service-account.json"}
+                or path.suffix.lower() in {".pyc", ".pem", ".key", ".p12", ".pfx", ".keystore"}):
+            continue
+        result[relative.as_posix()] = path.read_text(encoding="utf-8-sig")
+    return result
 
 
 def head(api, prefix, branch):
@@ -84,12 +104,7 @@ def ensure_hub(api, work, state, checkpoint):
             if not existing_ref:
                 api.call("POST",prefix+"/git/refs",dict(ref="refs/heads/main",sha=initial))
             api.call("PATCH",prefix,dict(default_branch="main"))
-        files = {}
-        for p in work.rglob("*"):
-            relative = p.relative_to(work)
-            if (p.is_file() and ".local" not in relative.parts and "__pycache__" not in relative.parts
-                    and p.suffix != ".pyc"):
-                files[relative.as_posix()] = p.read_text(encoding="utf-8-sig")
+        files = file_map(work)
         q.initialize(api,prefix,dict(private=True),h,files,checkpoint)
         h["main_commit"] = h["scaffold_commit"]
         h["main_ready"] = True
