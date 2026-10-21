@@ -272,6 +272,27 @@
       "line": 100,
       "blob_sha256": "640d4b0e9e51d02b447e38045b0134164e0444d0f89f42a0358a7d91dcd10f50",
       "reason": "Negative URL-validation test with public dummy credentials on reserved example.com"
+    },
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "sdk-tests/chain-upgrades.test.mjs",
+      "line": 104,
+      "blob_sha256": "8f08390353914ccbc4290166ac61ebb0c5617205c5b0becf554a158fcd4f3ed4",
+      "reason": "Reviewed negative URL-validation fixture on reserved example.com; public dummy credentials only"
+    },
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "sdk-tests/client.test.mjs",
+      "line": 59,
+      "blob_sha256": "630528bca3403962668add209641f3d75e66b4ea65bc0b3f7387af6559383dce",
+      "reason": "Reviewed negative URL-validation fixture on reserved example.com; public dummy credentials only"
+    },
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "tests/chain-upgrades.test.ts",
+      "line": 104,
+      "blob_sha256": "8a0862c07056541ac8127ee9c8703a99bc618d353ce2c93f0fd75aed1374a817",
+      "reason": "Reviewed negative URL-validation fixture on reserved example.com; public dummy credentials only"
     }
   ]
 }
