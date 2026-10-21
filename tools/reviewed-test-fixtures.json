@@ -293,6 +293,13 @@
       "line": 104,
       "blob_sha256": "8a0862c07056541ac8127ee9c8703a99bc618d353ce2c93f0fd75aed1374a817",
       "reason": "Reviewed negative URL-validation fixture on reserved example.com; public dummy credentials only"
+    },
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "tests/backend-boundaries.test.ts",
+      "line": 128,
+      "blob_sha256": "6de5c8a08303cfe1089cda72dda083cfb1b07d6e6f31781bf774c0de30f42580",
+      "reason": "Reviewed non-secret negative fixture in elon00/jarsol-web4-automaton PR 11, commit bbecbf46c2dec8d97709d0d02ba052449cd3c002 (cross-repository guard policy). Fixed credential-canary on reserved example.invalid; rejected before connection. Exact whole-file hash and line only."
     }
   ]
 }
