@@ -4,6 +4,8 @@ Portfolio hub for the canonical project catalog and reusable credential safeguar
 
 The working flagship demo is [Plonky](https://elon00.github.io/plonky/). Its [verified shared release](https://github.com/elon00/plonky/tree/7d65b4a5a98b2095ab638b780e445e6917ba05a1) was built and self-checked in 925 repositories. These share one implementation; separate product names do not establish independently implemented or commercially validated products.
 
+The [portfolio engineering standards](docs/ENGINEERING_STANDARDS.md) guide implementation, testing, credential handling and evidence requirements across this mission.
+
 ## Protect future changes
 
 Python 3.10+, Git, and Windows x64 or Linux x64:
