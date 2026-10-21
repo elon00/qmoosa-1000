@@ -6,10 +6,11 @@ The ignored `.local/` directory contains scanner binaries and redacted reports. 
 
 ```text
 python tools/security_guard.py install
+git -C path/to/project add -- reviewed-file.ext
 python tools/security_guard.py scan --repo path/to/project
 ```
 
-Run the scan before committing. It checks complete available local Git history, including merge diffs and commit/tag messages, plus staged changes. It rejects shallow history and changing refs/index content, and ignores repository-controlled scanner suppression files/comments. Known harmless tests require exact path, rule, line and file-content hashes. Reports contain finding locations and rule identifiers, with no matched credential values. Exit codes: 0 passed, 1 findings, 2 incomplete/error. A passing scan is a point-in-time automated check.
+Stage only the intended reviewed files first, then run the scan before committing. Replace the example paths above with your project and file paths. The scan does not inspect unstaged or untracked working-tree content. If you change or stage more content afterward, rerun it. It checks complete available local Git history, including merge diffs and commit/tag messages, plus staged changes. It rejects shallow history and changing refs/index content, and ignores repository-controlled scanner suppression files/comments. Reviewed non-secret runtime expressions, public identifiers and test fixtures require exact path, rule, line and file-content hashes. The historical reviewed-test-fixtures.json filename also covers these reviewed code false positives; changed content invalidates an exception. Reports contain finding locations and rule identifiers, with no matched credential values. Exit codes: 0 passed, 1 findings, 2 incomplete/error. A passing scan is a point-in-time automated check.
 
 This command does not publish repositories and does not assess hosted logs, issues, releases, wiki pages or arbitrary confidential customer data. Those require the separate publication review. GitHub secret scanning and push protection provide an additional server-side control; retain them for public repositories. Keep build and deployment credentials scoped separately.
 
