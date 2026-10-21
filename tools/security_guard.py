@@ -114,14 +114,20 @@ def scan(repo, report_path):
     with tempfile.TemporaryDirectory(prefix="qmoosa-scan-") as temporary:
         ignored = Path(temporary) / "empty.gitleaksignore"
         ignored.write_text("", encoding="utf-8")
-        for staged in ((False,) if bare else (False, True)):
-            result_path = Path(temporary) / ("staged.json" if staged else "history.json")
-            mode = ["--pre-commit", "--staged"] if staged else ["--log-opts=--all --full-history"]
-            command = [str(executable), "git", str(repo), *mode, "--config", str(policy),
+        metadata = git(repo, "log", "--all", "--format=commit %H%n%B") + b"\n" + git(
+            repo, "for-each-ref", "refs/tags", "--format=tag %(objectname)%0a%(contents)")
+        scopes = ["history", "metadata"] + ([] if bare else ["staged"])
+        for scope in scopes:
+            staged = scope == "staged"
+            result_path = Path(temporary) / (scope + ".json")
+            mode = ["--pre-commit", "--staged"] if staged else ["--log-opts=--all --full-history -m"]
+            source = ["stdin"] if scope == "metadata" else ["git", str(repo), *mode]
+            command = [str(executable), *source, "--config", str(policy),
                        "--gitleaks-ignore-path", str(ignored), "--ignore-gitleaks-allow", "--redact=100",
                        "--no-banner", "--no-color", "--max-decode-depth=5", "--max-archive-depth=3",
                        "--timeout=120", "--report-format=json", "--report-path", str(result_path)]
-            completed = subprocess.run(command, capture_output=True, timeout=150)
+            completed = subprocess.run(command, input=metadata if scope == "metadata" else None,
+                                       capture_output=True, timeout=150)
             if completed.returncode not in (0, 1) or not result_path.is_file():
                 raise RuntimeError("Credential scan failed; no clean result is claimed")
             detected = json.loads(result_path.read_text(encoding="utf-8"))
@@ -129,13 +135,17 @@ def scan(repo, report_path):
                 raise RuntimeError("Scanner result/exit-code mismatch")
             for finding in detected:
                 safe = {field: finding.get(field) for field in SAFE_FIELDS}
-                (reviewed_findings if reviewed(repo, safe, approvals, staged) else findings).append(safe)
+                if scope == "metadata":
+                    safe["File"] = "<commit-and-tag-messages>"
+                    findings.append(safe)
+                else:
+                    (reviewed_findings if reviewed(repo, safe, approvals, staged) else findings).append(safe)
     if before_refs != git(repo, "for-each-ref", "--format=%(objectname) %(refname)"):
         raise RuntimeError("Git refs changed during the scan")
     if not bare and before_index != git(repo, "diff", "--cached", "--raw", "-z", "--no-renames"):
         raise RuntimeError("Staged content changed during the scan")
     report = {"scanner": f"gitleaks {VERSION}", "status": "blocked" if findings else "passed",
-              "scope": "available local Git history and staged changes; not hosted logs or other GitHub surfaces",
+              "scope": "available local Git history including merge diffs, commit/tag messages and staged changes; not hosted logs or other GitHub surfaces",
               "policy_sha256": hashlib.sha256(policy.read_bytes()).hexdigest(),
               "findings": findings, "reviewed_test_findings": reviewed_findings}
     report_path = Path(report_path).resolve()

@@ -23,6 +23,8 @@ class CredentialGuardTests(unittest.TestCase):
         self.repo = self.root / "repo"
         self.repo.mkdir()
         guard.run(["git", "init", "-q", str(self.repo)])
+        guard.git(self.repo, "config", "user.name", "Security fixture")
+        guard.git(self.repo, "config", "user.email", "fixture@example.invalid")
 
     def tearDown(self):
         self.temp.cleanup()
@@ -67,6 +69,36 @@ class CredentialGuardTests(unittest.TestCase):
         guard.run(["git", "clone", "--depth", "1", self.repo.as_uri(), str(clone)])
         with self.assertRaisesRegex(RuntimeError, "Full history"):
             guard.scan(clone, self.root / "report.json")
+
+    def test_credential_added_only_in_merge_commit_is_detected(self):
+        (self.repo / "README.md").write_text("fixture\n", encoding="utf-8")
+        self.commit()
+        initial = guard.git(self.repo, "branch", "--show-current").decode().strip()
+        guard.git(self.repo, "checkout", "-qb", "other")
+        (self.repo / "other.txt").write_text("branch\n", encoding="utf-8")
+        self.commit()
+        guard.git(self.repo, "checkout", initial)
+        guard.git(self.repo, "merge", "--no-ff", "--no-commit", "other")
+        credential = "ghp_" + secrets.token_hex(18)
+        (self.repo / "config.js").write_text("const apiKey='" + credential + "';\n", encoding="utf-8")
+        self.commit()
+        (self.repo / "config.js").unlink()
+        self.commit()
+        self.assert_detected_without_disclosure(credential)
+
+    def test_commit_message_credential_is_detected(self):
+        credential = "ghp_" + secrets.token_hex(18)
+        guard.git(self.repo, "-c", "user.name=Security fixture", "-c", "user.email=fixture@example.invalid",
+                  "commit", "--allow-empty", "-qm", "api_key=" + credential)
+        self.assert_detected_without_disclosure(credential)
+
+    def test_annotated_tag_message_credential_is_detected(self):
+        (self.repo / "README.md").write_text("fixture\n", encoding="utf-8")
+        self.commit()
+        credential = "ghp_" + secrets.token_hex(18)
+        guard.git(self.repo, "-c", "user.name=Security fixture", "-c", "user.email=fixture@example.invalid",
+                  "tag", "-a", "fixture", "-m", "api_key=" + credential)
+        self.assert_detected_without_disclosure(credential)
 
     def test_archive_tampering_is_rejected(self):
         with self.assertRaisesRegex(RuntimeError, "checksum"):
