@@ -300,6 +300,20 @@
       "line": 128,
       "blob_sha256": "6de5c8a08303cfe1089cda72dda083cfb1b07d6e6f31781bf774c0de30f42580",
       "reason": "Reviewed non-secret negative fixture in elon00/jarsol-web4-automaton PR 11, commit bbecbf46c2dec8d97709d0d02ba052449cd3c002 (cross-repository guard policy). Fixed credential-canary on reserved example.invalid; rejected before connection. Exact whole-file hash and line only."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "contracts/lib/forge-std/src/StdCheats.sol",
+      "line": 591,
+      "blob_sha256": "988843996b3e8ebab594c659fba9502bab437220f84e7ded9a9e3f6e730d358e",
+      "reason": "Reviewed elon00/qmoosa-amm-protocol history 2f1c2868bd5aaab00a7edd8209d53204054324e6. Vendored Foundry test helper assigns vm.deriveKey(mnemonic,index), using caller parameters; no stored credential value. Exact file hash, rule and line only."
+    },
+    {
+      "rule": "generic-api-key",
+      "path": "tests/invariants.test.mjs",
+      "line": 143,
+      "blob_sha256": "16df83b6eb84917ff36a13fa79ed7b52bb091231e8c22467be1caa8a32ecbd46",
+      "reason": "Reviewed elon00/qmoosa-amm-protocol history 2f1c2868bd5aaab00a7edd8209d53204054324e6. Public Solana mainnet USDC mint used only as an asset identity fixture, confirmed against https://developers.circle.com/stablecoins/usdc-contract-addresses on 2026-10-22. Not an API key. Exact file hash, rule and line only."
     }
   ]
 }
