@@ -43,3 +43,9 @@ All three `inflatx-gate`, `wardenx-gate`, and `craftx-gate` default-branch `.git
 - CI_VERIFIED current default HEAD: prior sampled **15**, not newly exhaustively checked.
 - SECURITY_APPROVED / DEPLOYMENT_READY / production-certified: **0 independently evidenced**.
 - Manifest `private: true` vs observed public for these 15 is a **policy/visibility review item**. No visibility change, merge, deployment, gas/cycles expenditure, paid operation, or force-push.
+
+## Follow-up: Batch 014 partial remediation evidence (2026-10-24)
+
+At [Hybrid TLS engine draft PR #2](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/pull/2), commit [b243de7](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/commit/b243de73660d102e9b3936721a73f6996df48eaf) adds an in-process SHA-256 fingerprint registry for outbound AES-GCM key/IV reuse. Two new real-engine negative regressions first **failed** on prior commit b1a1bef (36 passed, 2 failed), demonstrating the issue. At the new PR head, [GitHub Actions run 40089091667](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/actions/runs/40089091667) completed **SUCCESS** with 38 tests passed, 0 failed, and lint executed. This is **PR-head** CI only, not current default-branch HEAD. Process restart, multi-worker/distributed uniqueness, durable key lifecycle, and independent security review remain unresolved. **SECURITY_APPROVED = NO; DEPLOYMENT_READY = NO; FIPS certification not claimed.**
+
+At [inflatx-gate draft PR #1](https://github.com/elon00/inflatx-gate/pull/1), fail-closed Python compilation and correctly initialized Python CodeQL were committed on a review branch. [CodeQL run 40089041767](https://github.com/elon00/inflatx-gate/actions/runs/40089041767) completed SUCCESS; [Python test run 40089041780](https://github.com/elon00/inflatx-gate/actions/runs/40089041780) FAILED on malformed source (U+0004), as intended. Do not merge or label security-approved.
