@@ -61,3 +61,9 @@ Date: **2026-10-25** (GitHub data observed 2026-10-24/25 UTC). Scope: 15 **exist
 2. Fix `mythrilx-gate` and `z3proof-gate` fail-closed CI and add implementation-bound tests.
 3. Prove cross-process and crash/restart nonce safety in Batch 14 or explicitly prohibit the raw helper in production.
 4. Reconcile the three unresolved Batch 148 identities without duplicates; review manifest private-vs-public mismatch.
+
+## PR-head CI observed after remediation
+
+- [echidnax-gate PR #1 CodeQL run 40141731052](https://github.com/elon00/echidnax-gate/actions/runs/40141731052): **SUCCESS** (Python CodeQL job only).
+- [echidnax-gate PR #1 verification run 40141731022](https://github.com/elon00/echidnax-gate/actions/runs/40141731022): **FAILED**; Rust build job SUCCESS, Python test job FAILED during `compileall` on the pre-existing corrupted test source. No test bypass and no security approval.
+- These are PR-head results on `f59f26170cf55b4a45a297f604d284e2189ce0f1`, **not** current default-branch CI.
