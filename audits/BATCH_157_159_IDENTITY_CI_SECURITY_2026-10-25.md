@@ -47,3 +47,8 @@ For the 15 entries below, GitHub owner-scoped `fork:false` repository search ret
 - **IMPLEMENTED portfolio count:** unverified. **CI_VERIFIED portfolio-wide count:** not exhaustively refreshed. The prior sampled 15 current-HEAD successes are not a new 1,000-repository census.
 
 No force-push, merge, public deployment, paid operations, secret access or bypassed security gates.
+
+
+## 2026-10-25 Batch 14 P1 adversarial test update
+
+[Hybrid TLS engine draft PR #2](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/pull/2) gained commit [ffc39df](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/commit/ffc39df0a9f044b367c13ef588b772174e71cd6c), adding a real-engine two-process AES-GCM outbound key/IV reuse regression. It is **expected to fail** until a durable cross-process nonce uniqueness design exists. The previously successful 38-test run does not cover this new commit. Check the new PR-head Actions result; do not call Batch 14 green on the old run.
