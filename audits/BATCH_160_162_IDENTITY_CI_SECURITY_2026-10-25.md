@@ -48,3 +48,10 @@ Date: 2026-10-25. Status: **AUDIT ONLY — NOT PRODUCTION CERTIFIED**.
 - `CI_VERIFIED`: 15 previously sampled default-HEAD successes; **not rechecked** in this iteration.
 - `SECURITY_APPROVED`, `DEPLOYMENT_READY`, `PRODUCTION_CERTIFIED`: **0 independently evidenced**.
 - No PR merged, no public deployment, no gas/cycles, no force-push. Fail-closed CI remediation requires review; no fake green claims.
+
+## Actual remediation checkpoint (same iteration)
+
+- [secgate-gate draft PR #1](https://github.com/elon00/secgate-gate/pull/1) created on review branch `audit/failclosed-ci-20261025`, head `2130a14cf7c7712cf623854c210f99267c4df691`. Three changed files: fail-closed Python/Rust CI, correctly initialized Python CodeQL, evidence-only README. **Unmerged**.
+- [New PR-head fail-closed test run #40186516597](https://github.com/elon00/secgate-gate/actions/runs/40186516597): **FAILED**, exact source diagnostic `SyntaxError: invalid non-printable character U+0004` in `tests/reality_battery.py`. This failure is expected and must not be bypassed.
+- [New PR-head CodeQL run #40186516606](https://github.com/elon00/secgate-gate/actions/runs/40186516606): **IN PROGRESS** at this checkpoint; do not claim success.
+- [Coordinator PR-head CI #40186484098](https://github.com/elon00/qmoosa-1000/actions/runs/40186484098): **SUCCESS** at preceding audit-document commit `f22ed91befc69448ec613ee5ce675cb7bf3b9014`; this is documentation CI, not protocol acceptance.
