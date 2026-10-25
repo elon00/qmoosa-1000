@@ -52,3 +52,12 @@ No force-push, merge, public deployment, paid operations, secret access or bypas
 ## 2026-10-25 Batch 14 P1 adversarial test update
 
 [Hybrid TLS engine draft PR #2](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/pull/2) gained commit [ffc39df](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/commit/ffc39df0a9f044b367c13ef588b772174e71cd6c), adding a real-engine two-process AES-GCM outbound key/IV reuse regression. It is **expected to fail** until a durable cross-process nonce uniqueness design exists. The previously successful 38-test run does not cover this new commit. Check the new PR-head Actions result; do not call Batch 14 green on the old run.
+
+
+## Cross-repository implementation blockers (source inspected 2026-10-25)
+
+- `elon00/keyguard-run/src/engine.rs`: the `println!(...S;` line is syntactically invalid Rust, and the exposed engine is a generic atomic bit-state stepper rather than a cryptographic seed/key leakage auditor. Its `load` then `store` transition also is not a single atomic read-modify-write operation.
+- `elon00/keyguard-kit/src/index.ts`: `QMoosaClientConfig` declares `quickNodeQpcUrl` but the constructor reads `config.quickNodeRpcurl`; the TypeScript property mismatch blocks a type-safe build. The SDK shown only creates an encoded X402 header and simulates a bitboard step; it does not demonstrate key-leakage detection.
+- `elon00/keyguard/src/main.rs`: prints `QuickNode ... CONNECTED` and `FIPS ... ACTIVE` without a connection or cryptographic verification.
+
+These are implementation/readiness blockers, not evidence that a key-leakage auditor is implemented. Address with isolated, tested review PRs; do not certify on documentation or smoke output alone.
