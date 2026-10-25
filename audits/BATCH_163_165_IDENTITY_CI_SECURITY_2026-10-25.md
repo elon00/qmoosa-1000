@@ -49,3 +49,7 @@ Date: 2026-10-25 (UTC). Scope: bounded read/write verification; no deployment, s
 2. Fix invalid action refs and CodeQL initialization, then verify **current PR HEAD** and **current default HEAD** separately.
 3. Resolve Batch 14 P1 with durable cross-process protection and independent review.
 4. Reconcile all 1,000 stable GitHub IDs against a fully paginated fresh owner inventory; exclude forks, duplicates and unrelated repositories.
+
+## PR-head verification after this checkpoint
+- `insurex-gate` PR #1 HEAD `202ee5e3e6d47f1122e138cdaa39c6cc1dc5e73f`: https://github.com/elon00/insurex-gate/actions/runs/40215974884 — Python verification FAILED at `compileall` with U+0004; Rust verification SUCCESS. https://github.com/elon00/insurex-gate/actions/runs/40215974898 — CodeQL job SUCCESS. **Combined PR not green**; both jobs must be assessed separately.
+- Fresh recheck on 2026-10-25: five Batch 14 `main` HEAD SHAs still match their prior SUCCESS workflow runs (protocol `39169456197`, engine `39312562674`, SDK `39169895366`, dashboard `39170027426`, tests `39170506228`). This is 5 freshly rechecked current-default-HEAD CI results, not new production certification. The engine PR head remains red as above.
