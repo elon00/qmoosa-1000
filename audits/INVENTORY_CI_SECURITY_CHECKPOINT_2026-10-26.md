@@ -39,7 +39,7 @@ Draft PR: https://github.com/elon00/genpack-gate/pull/1
 - Fixed invalid `actions/checkout@4` and `github/codeql-action/*@3` workflow references, initialized Python CodeQL, and added fail-closed compilation/regression execution.
 - Removed fabricated FIPS, RPC-connected, and production/100/100 assertions from the runtime and documentation.
 - Scope: local artifact integrity only; **not** SDK semantics, signature provenance, FIPS validation, or production approval.
-- PR-head workflow IDs: https://github.com/elon00/genpack-gate/actions/runs/40364044853 (local gate CI) and https://github.com/elon00/genpack-gate/actions/runs/40364044971 (CodeQL). Consult the live runs for their final conclusions; do not assume a pending check passed.
+- PR-head workflow IDs: https://github.com/elon00/genpack-gate/actions/runs/40364044853 (**SUCCESS**, 14 Python tests PASS, Rust compiled; Rust unit test count 0) and https://github.com/elon00/genpack-gate/actions/runs/40364044971 (**SUCCESS**, 14 Python tests PASS and CodeQL results uploaded). Both were observed completed on 2026-10-26 for PR-head commit `bce5ca2c112600890533a6a4f174ebaa584ca7e7`. These are **PR-head** checks, not merged/default-HEAD acceptance.
 
 ## P1 Batch 14 — still blocking
 
