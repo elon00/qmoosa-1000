@@ -59,3 +59,8 @@ cryptopkg-gate PR #1 head SHA **93c7cc5a9de8f83cd84fddb1b24578e22f9e4207**:
 - These are PR-head checks only, not default-branch current-HEAD CI, package signing, full registry functionality, independent security approval or production readiness. PR remains draft and unmerged.
 
 Coordinator audit PR #7 head at first publication: c28de6261ba4115106a51506f1488f7b05351030. Coordinator workflow #40418642046 was **QUEUED** when observed; do not report it as PASS without a completed result.
+
+
+## 2026-10-27 default-HEAD CI sample recheck
+
+All 15 repos in [CURRENT_HEAD_CI_SAMPLE_15_2026-10-25.md](https://github.com/elon00/qmoosa-1000/blob/audit/batch136-138-identity-ci-20261024/audits/CURRENT_HEAD_CI_SAMPLE_15_2026-10-25.md) were independently rechecked using GitHub compare (recorded SHA versus current main). Every comparison returned status=identical, ahead_by=0, behind_by=0. The 15 recorded GitHub Actions run IDs were re-read; each returned a completed SUCCESS job. **CI_VERIFIED = 15 sampled current-default-HEAD repos** as of this check, not a portfolio-wide number. The unmerged Batch 14 raw adapter PR still has a failing adversarial regression and is not security approved.
