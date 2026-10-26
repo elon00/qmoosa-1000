@@ -42,3 +42,8 @@ Source of approval: `catalog/canonical.json` (exactly 1,000 entries). Each canon
 2. Review Anvilx PR #1 at its latest HEAD; keep draft if any workflow fails. Implement real node-emulator behavior and adversarial tests before counting IMPLEMENTED.
 3. Remediate Mockx and Flamegas gate test corruption and invalid Actions; do not turn fixture tests into production claims.
 4. Reconcile full manifest with complete paginated owner inventory, stable IDs and rename provenance; resolve private/public policy with owner.
+
+## Post-checkpoint verified workflow results (same date)
+- [anvilx-gate PR-head Rust/Python regression run #40270882088](https://github.com/elon00/anvilx-gate/actions/runs/40270882088): **SUCCESS** at commit `a5d6095c0924c0d95f7bd61a71245f36c7545ebb`.
+- [anvilx-gate PR-head CodeQL #40270882199](https://github.com/elon00/anvilx-gate/actions/runs/40270882199): **SUCCESS** at the **same PR head**. This is a **draft, unmerged** PR and only verifies local diagnostic/test infrastructure; no increment to default-HEAD CI or IMPLEMENTED count.
+- 15 previously sampled default-`main` repositories (five each Hybrid TLS, Groth16, SLH-DSA) had their current branch SHAs re-read on 2026-10-26; all 15 SHAs remain identical to [the prior success-run evidence](https://github.com/elon00/qmoosa-1000/blob/audit/batch136-138-identity-ci-20261024/audits/CURRENT_HEAD_CI_SAMPLE_15_2026-10-25.md). **Current-HEAD CI_VERIFIED sample remains 15**, not a portfolio-wide count.
