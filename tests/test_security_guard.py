@@ -8,6 +8,8 @@ import secrets
 import subprocess
 import tempfile
 import unittest
+import warnings
+import zipfile
 from unittest.mock import patch
 
 WORK = Path(__file__).resolve().parents[1]
@@ -127,6 +129,106 @@ class CredentialGuardTests(unittest.TestCase):
         self.commit()
         finding["Commit"] = guard.git(self.repo, "rev-parse", "HEAD").decode().strip()
         self.assertFalse(guard.reviewed(self.repo, finding, approvals, False))
+
+    def archive(self, entries):
+        output = io.BytesIO()
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)
+            with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as bundle:
+                for name, content in entries:
+                    bundle.writestr(name, content)
+        return output.getvalue()
+
+    def zip_fixture(self, content=b"public test fixture\n", member="src/fixture.js"):
+        archive = self.archive([(member, content)])
+        (self.repo / "fixture.zip").write_bytes(archive)
+        self.commit()
+        finding = {"RuleID": "qmoosa-credential-assignment", "File": "fixture.zip!" + member,
+                   "StartLine": 1, "Commit": guard.git(self.repo, "rev-parse", "HEAD").decode().strip()}
+        approval = {"rule": finding["RuleID"], "path": finding["File"], "line": 1,
+                    "blob_sha256": hashlib.sha256(content).hexdigest(),
+                    "container_sha256": hashlib.sha256(archive).hexdigest()}
+        return finding, approval
+
+    def test_zip_review_requires_exact_container_and_leaf_hashes(self):
+        finding, approval = self.zip_fixture()
+        self.assertTrue(guard.reviewed(self.repo, finding, [approval], False))
+        for field in ("container_sha256", "blob_sha256"):
+            wrong = {**approval, field: "0" * 64}
+            self.assertFalse(guard.reviewed(self.repo, finding, [wrong], False))
+        missing = {key: value for key, value in approval.items() if key != "container_sha256"}
+        self.assertFalse(guard.reviewed(self.repo, finding, [missing], False))
+
+    def test_zip_change_cannot_inherit_a_review_even_with_same_leaf(self):
+        finding, approval = self.zip_fixture()
+        changed = self.archive([("src/fixture.js", b"public test fixture\n"), ("extra.txt", b"new content")])
+        (self.repo / "fixture.zip").write_bytes(changed)
+        self.commit()
+        finding["Commit"] = guard.git(self.repo, "rev-parse", "HEAD").decode().strip()
+        self.assertFalse(guard.reviewed(self.repo, finding, [approval], False))
+
+    def test_nested_zip_review_binds_outer_archive_and_leaf(self):
+        leaf = b"public nested test fixture\n"
+        nested = self.archive([("src/fixture.js", leaf)])
+        outer = self.archive([("inner.zip", nested)])
+        (self.repo / "fixture.zip").write_bytes(outer)
+        self.commit()
+        commit = guard.git(self.repo, "rev-parse", "HEAD").decode().strip()
+        finding = {"RuleID": "qmoosa-credential-assignment", "File": "fixture.zip!inner.zip!src/fixture.js",
+                   "StartLine": 1, "Commit": commit}
+        approval = {"rule": finding["RuleID"], "path": finding["File"], "line": 1,
+                    "blob_sha256": hashlib.sha256(leaf).hexdigest(),
+                    "container_sha256": hashlib.sha256(outer).hexdigest()}
+        self.assertTrue(guard.reviewed(self.repo, finding, [approval], False))
+        approval["blob_sha256"] = hashlib.sha256(nested).hexdigest()
+        self.assertFalse(guard.reviewed(self.repo, finding, [approval], False))
+
+    def test_credential_in_nested_zip_is_detected_without_disclosure(self):
+        credential = "ghp_" + secrets.token_hex(18)
+        nested = self.archive([("src/config.js", ("const apiKey='" + credential + "';\n").encode())])
+        (self.repo / "fixture.zip").write_bytes(self.archive([("inner.zip", nested)]))
+        self.commit()
+        self.assert_detected_without_disclosure(credential)
+
+    def test_staged_zip_review_uses_index_not_working_tree(self):
+        finding, approval = self.zip_fixture()
+        guard.git(self.repo, "add", "fixture.zip")
+        (self.repo / "fixture.zip").write_bytes(b"unstaged content")
+        self.assertTrue(guard.reviewed(self.repo, finding, [approval], True))
+
+    def test_duplicate_and_unsafe_zip_members_are_rejected(self):
+        for member in ("../fixture.js", "/fixture.js", "a/../fixture.js", "a\\fixture.js"):
+            finding, approval = self.zip_fixture(member=member)
+            with self.assertRaisesRegex(RuntimeError, "safely"):
+                guard.reviewed(self.repo, finding, [approval], False)
+        finding, approval = self.zip_fixture()
+        (self.repo / "fixture.zip").write_bytes(self.archive([
+            ("src/fixture.js", b"first"), ("src/fixture.js", b"second")]))
+        self.commit()
+        finding["Commit"] = guard.git(self.repo, "rev-parse", "HEAD").decode().strip()
+        with self.assertRaisesRegex(RuntimeError, "safely"):
+            guard.reviewed(self.repo, finding, [approval], False)
+
+    def test_review_archive_size_and_nesting_bounds(self):
+        finding, approval = self.zip_fixture(content=b"x" * 129)
+        with patch.object(guard, "MAX_REVIEW_MEMBER_BYTES", 128), self.assertRaisesRegex(RuntimeError, "safely"):
+            guard.reviewed(self.repo, finding, [approval], False)
+        finding["File"] = "fixture.zip!a.zip!b.zip!c.zip!fixture.js"
+        with self.assertRaisesRegex(RuntimeError, "nesting"):
+            guard.review_source(self.repo, finding["File"], finding["Commit"], False)
+
+    def test_symlink_archive_member_cannot_receive_an_exception(self):
+        output = io.BytesIO()
+        entry = zipfile.ZipInfo("src/fixture.js")
+        entry.create_system = 3
+        entry.external_attr = (0o120777 << 16)
+        with zipfile.ZipFile(output, "w") as bundle:
+            bundle.writestr(entry, "../outside")
+        (self.repo / "fixture.zip").write_bytes(output.getvalue())
+        self.commit()
+        commit = guard.git(self.repo, "rev-parse", "HEAD").decode().strip()
+        with self.assertRaisesRegex(RuntimeError, "safely"):
+            guard.review_source(self.repo, "fixture.zip!src/fixture.js", commit, False)
 
 
 if __name__ == "__main__":

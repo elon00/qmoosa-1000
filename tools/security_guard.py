@@ -7,8 +7,9 @@ import hashlib
 import io
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import platform
+import stat
 import subprocess
 import sys
 import tarfile
@@ -23,6 +24,9 @@ ASSETS = {
     "Linux": ("linux_x64.tar.gz", "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb", "gitleaks"),
 }
 SAFE_FIELDS = ("RuleID", "File", "StartLine", "Commit", "Fingerprint")
+MAX_REVIEW_ARCHIVE_BYTES = 30 * 1024 * 1024
+MAX_REVIEW_MEMBER_BYTES = 16 * 1024 * 1024
+MAX_REVIEW_ARCHIVE_DEPTH = 3
 
 
 def run(args, *, cwd=None):
@@ -88,16 +92,58 @@ def git(repo, *args):
     return run(["git", "-C", str(repo), *args])
 
 
+def review_source(repo, path, commit, staged):
+    """Read exact Git/index bytes and bounded ZIP members without extraction.
+
+    Archive approvals bind both the whole outer Git blob and the leaf source.
+    Ambiguous/unsafe entries cannot receive a reviewed-fixture exception.
+    """
+    archive, *members = path.split("!")
+    if len(members) > MAX_REVIEW_ARCHIVE_DEPTH:
+        raise RuntimeError("Reviewed archive nesting exceeds the supported bound")
+    reference = ":" + archive if staged else commit + ":" + archive
+    content = git(repo, "show", reference)
+    if not members:
+        return content, None
+    container_hash = hashlib.sha256(content).hexdigest()
+    try:
+        for member in members:
+            parts = PurePosixPath(member).parts
+            if (not member or member.startswith("/") or "\\" in member or ":" in member
+                    or any(part in (".", "..") for part in parts)
+                    or str(PurePosixPath(member)) != member
+                    or len(content) > MAX_REVIEW_ARCHIVE_BYTES):
+                raise ValueError("Unsafe or oversized archive review source")
+            with zipfile.ZipFile(io.BytesIO(content)) as bundle:
+                entries = [item for item in bundle.infolist() if item.filename == member]
+                if len(entries) != 1:
+                    raise ValueError("Missing or ambiguous archive member")
+                entry = entries[0]
+                kind = stat.S_IFMT(entry.external_attr >> 16)
+                if (entry.is_dir() or kind not in (0, stat.S_IFREG)
+                        or entry.file_size > MAX_REVIEW_MEMBER_BYTES):
+                    raise ValueError("Unsupported archive member")
+                with bundle.open(entry) as stream:
+                    content = stream.read(MAX_REVIEW_MEMBER_BYTES + 1)
+                if len(content) != entry.file_size or len(content) > MAX_REVIEW_MEMBER_BYTES:
+                    raise ValueError("Incomplete or oversized archive member")
+    except (OSError, ValueError, KeyError, RuntimeError, EOFError,
+            NotImplementedError, zipfile.BadZipFile):
+        raise RuntimeError("Archived review source could not be verified safely") from None
+    return content, container_hash
+
+
 def reviewed(repo, finding, approvals, staged):
     candidates = [entry for entry in approvals if entry["rule"] == finding.get("RuleID")
                   and entry["path"] == finding.get("File") and entry["line"] == finding.get("StartLine")]
     if not candidates:
         return False
     commit = finding.get("Commit", "")
-    reference = ":" + finding["File"] if staged else commit + ":" + finding["File"]
-    content = git(repo, "show", reference)
+    content, container_hash = review_source(repo, finding["File"], commit, staged)
     digest = hashlib.sha256(content).hexdigest()
-    return any(entry["blob_sha256"] == digest for entry in candidates)
+    return any(entry["blob_sha256"] == digest
+               and (container_hash is None or entry.get("container_sha256") == container_hash)
+               for entry in candidates)
 
 
 def scan(repo, report_path):

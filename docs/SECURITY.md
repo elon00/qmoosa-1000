@@ -14,6 +14,8 @@ Stage only the intended reviewed files first, then run the scan before committin
 
 This command does not publish repositories and does not assess hosted logs, issues, releases, wiki pages or arbitrary confidential customer data. Those require the separate publication review. GitHub secret scanning and push protection provide an additional server-side control; retain them for public repositories. Keep build and deployment credentials scoped separately.
 
+For a reviewed finding inside a ZIP, the exact `archive.zip!path/to/member` location also requires a `container_sha256` for the complete outer Git blob and a `blob_sha256` for the final member. The guard reads the committed blob or staged index, never an extracted working-tree replacement. Review supports at most three ZIP member levels, a 30 MiB archive at each level, and a 16 MiB member. Duplicate names, noncanonical paths, symlinks, directories, unsupported members and unreadable archives cannot receive an exception. Other archive formats remain unresolved rather than inheriting a ZIP review. Scanner detection continues to include unreviewed archive findings; these bounds apply to verifying an explicit exception.
+
 `.gitignore` cannot erase existing commits or revoke a credential. If a real credential is exposed, revoke/rotate it through its provider first. History cleanup needs coordination; do not force-push a blanket rewrite. Follow [GitHub's sensitive-data removal guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository). Never paste tokens, wallet keys or recovery phrases into issues or chat.
 
 ## Check account controls
