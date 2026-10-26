@@ -92,19 +92,59 @@ def git(repo, *args):
     return run(["git", "-C", str(repo), *args])
 
 
+def review_blob_id(repo, path, commit, staged):
+    """Resolve an exact literal Git filename without reading its blob body."""
+    command = (["ls-files", "--stage", "-z", "--", path] if staged else
+               ["ls-tree", "-r", "-z", "--full-tree", commit, "--", path])
+    records = git(repo, "--literal-pathspecs", *command).split(b"\0")
+    matches = [record.split(b"\t", 1)[0].split() for record in records
+               if b"\t" in record and record.split(b"\t", 1)[1] == path.encode("utf-8")]
+    if not matches:
+        return None
+    if len(matches) != 1 or len(matches[0]) != 3:
+        raise RuntimeError("Ambiguous Git source cannot receive a review")
+    fields = matches[0]
+    if fields[0] not in (b"100644", b"100755", b"120000") or (
+            fields[2] != b"0" if staged else fields[1] != b"blob"):
+        raise RuntimeError("Git source is not an unambiguous file blob")
+    object_id = fields[1 if staged else 2].decode("ascii")
+    if len(object_id) not in (40, 64) or any(c not in "0123456789abcdef" for c in object_id):
+        raise RuntimeError("Unexpected Git object identity")
+    return object_id
+
+
+def review_blob(repo, object_id):
+    """Check size, then read the same immutable blob without text conversion."""
+    declared = git(repo, "cat-file", "-s", object_id).strip()
+    if not declared.isdigit() or int(declared) > MAX_REVIEW_ARCHIVE_BYTES:
+        raise RuntimeError("Reviewed Git blob exceeds the supported size bound")
+    content = git(repo, "cat-file", "blob", object_id)
+    if len(content) != int(declared):
+        raise RuntimeError("Git source size changed unexpectedly")
+    return content
+
+
 def review_source(repo, path, commit, staged):
     """Read exact Git/index bytes and bounded ZIP members without extraction.
 
     Archive approvals bind both the whole outer Git blob and the leaf source.
     Ambiguous/unsafe entries cannot receive a reviewed-fixture exception.
     """
-    archive, *members = path.split("!")
-    if len(members) > MAX_REVIEW_ARCHIVE_DEPTH:
+    # A literal filename containing ! takes precedence over archive notation.
+    object_id = review_blob_id(repo, path, commit, staged)
+    if object_id is not None:
+        return review_blob(repo, object_id), None
+    parts = path.split("!")
+    if len(parts) - 1 > MAX_REVIEW_ARCHIVE_DEPTH:
         raise RuntimeError("Reviewed archive nesting exceeds the supported bound")
-    reference = ":" + archive if staged else commit + ":" + archive
-    content = git(repo, "show", reference)
-    if not members:
-        return content, None
+    for boundary in range(len(parts) - 1, 0, -1):
+        object_id = review_blob_id(repo, "!".join(parts[:boundary]), commit, staged)
+        if object_id is not None:
+            members = parts[boundary:]
+            break
+    else:
+        raise RuntimeError("Reviewed Git source could not be resolved")
+    content = review_blob(repo, object_id)
     container_hash = hashlib.sha256(content).hexdigest()
     try:
         for member in members:
@@ -134,6 +174,7 @@ def review_source(repo, path, commit, staged):
 
 
 def reviewed(repo, finding, approvals, staged):
+    """Accept a review only for identical leaf bytes and container identity."""
     candidates = [entry for entry in approvals if entry["rule"] == finding.get("RuleID")
                   and entry["path"] == finding.get("File") and entry["line"] == finding.get("StartLine")]
     if not candidates:
@@ -142,7 +183,7 @@ def reviewed(repo, finding, approvals, staged):
     content, container_hash = review_source(repo, finding["File"], commit, staged)
     digest = hashlib.sha256(content).hexdigest()
     return any(entry["blob_sha256"] == digest
-               and (container_hash is None or entry.get("container_sha256") == container_hash)
+               and entry.get("container_sha256") == container_hash
                for entry in candidates)
 
 
