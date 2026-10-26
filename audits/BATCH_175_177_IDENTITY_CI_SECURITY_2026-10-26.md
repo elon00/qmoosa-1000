@@ -47,3 +47,8 @@ Approval source: catalog/canonical.json (1,000 unique names). Each QMOOSA canoni
 2. Verify both PR-head workflows for veribuild-gate; keep draft until scope/security review.
 3. Repair genpack-gate and cryptopkg-gate with genuine implementation-coupled tests, not fake green.
 4. Continue canonical ID mapping with QMOOSA-0886 onward, while resolving private/public visibility policy before provisioning any missing repositories.
+
+## Same-day verification addendum (2026-10-26)
+- At PR head 8380b32e1952711451c5e7219970e54137a0092b, [veribuild-gate regression workflow #40310600693](https://github.com/elon00/veribuild-gate/actions/runs/40310600693) and [CodeQL workflow #40310600571](https://github.com/elon00/veribuild-gate/actions/runs/40310600571) both completed SUCCESS. CodeQL init/analyze, Rust compilation, and actual comparator subprocess tests all succeeded. PR remains draft/unmerged; these results do NOT establish the full approved reproducible-build implementation or security certification.
+- The previously documented [15-repository current-main sample](https://github.com/elon00/qmoosa-1000/blob/audit/batch136-138-identity-ci-20261024/audits/CURRENT_HEAD_CI_SAMPLE_15_2026-10-25.md) was freshly rechecked: all 15 current main SHAs still equal their successful workflow-run SHAs. Thus 15 sampled default-HEAD CI verifications remain valid, not a portfolio-wide count.
+- Coordinator's own new audit commit workflow is separately tracked; do not assume it passed until its exact head SHA is completed SUCCESS.
