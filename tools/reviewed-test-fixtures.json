@@ -314,6 +314,175 @@
       "line": 143,
       "blob_sha256": "16df83b6eb84917ff36a13fa79ed7b52bb091231e8c22467be1caa8a32ecbd46",
       "reason": "Reviewed elon00/qmoosa-amm-protocol history 2f1c2868bd5aaab00a7edd8209d53204054324e6. Public Solana mainnet USDC mint used only as an asset identity fixture, confirmed against https://developers.circle.com/stablecoins/usdc-contract-addresses on 2026-10-22. Not an API key. Exact file hash, rule and line only."
+    },
+    {
+      "rule": "generic-api-key",
+      "path": "scripts/quicknode-stream-filter.js",
+      "line": 19,
+      "blob_sha256": "ddf8786d51d506f4b8ed131301a997f0661473c6c26fb79e34f7eff3daed94f9",
+      "reason": "Reviewed QARBI QuickNode stream contract filter: TOKEN is a public 20-byte EVM contract address, not an API credential."
+    },
+    {
+      "rule": "generic-api-key",
+      "path": "scripts/quicknode-stream-filter.js",
+      "line": 19,
+      "blob_sha256": "7d23aa998991b22056312fe432c46430417bd9f2042eddd0da9c9658bee3c279",
+      "reason": "Reviewed QARBI QuickNode stream contract filter: TOKEN is a public 20-byte EVM contract address, not an API credential."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "scripts/deploy.js",
+      "line": 26,
+      "blob_sha256": "4ae4d9250b9f0df1d971c6d47f0042d5c9f964bd9bcd1ca85136e40c81d7fb00",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "netlify/functions/api.mts",
+      "line": 74,
+      "blob_sha256": "f5b565a6acfab0cc85394a130ebe5d341d367a24939020e93404b6a4898ffe35",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.cjs.map",
+      "line": 4,
+      "blob_sha256": "65a36d669703585d923af682d3fcd81479529b92814071e49194712443e5faf6",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup, runtime generated-key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "assets/index-DQvctpXy.js",
+      "line": 297,
+      "blob_sha256": "409d4b4d089ae4804cb3f827198b1beb59b18e25b9e1eeaf443ee58e204aa712",
+      "reason": "Reviewed QARBI source contains only runtime key comparison, runtime key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.cjs.map",
+      "line": 4,
+      "blob_sha256": "4e5a9327dd8ecc5270b56a525bb6d43bf9e298287aa247fe2e1de6b402b47926",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup, runtime generated-key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.cjs.map",
+      "line": 4,
+      "blob_sha256": "b145d9c1c4e7f47d04d39acb133f8e41d04d48f60ffcb91761152970828949d8",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup, runtime generated-key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.cjs.map",
+      "line": 4,
+      "blob_sha256": "f91940b18ed12a3ff7dc4c01bf9475ab252b648667675d436b584418e5386ab4",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup, runtime generated-key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.cjs.map",
+      "line": 4,
+      "blob_sha256": "a83f4de191a132f32db79d3d7bc390df948dee675b61dc3789a03713283a3df2",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup, runtime generated-key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": ".env.example",
+      "line": 7,
+      "blob_sha256": "9151ab1a0ce4ed2b93db9ff3341ff9902bd6fa449bf09f0708f3273f24a9bf30",
+      "reason": "Reviewed QARBI source contains only documented Gemini placeholder at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.cjs",
+      "line": 490,
+      "blob_sha256": "28bcd8aeb87cc6c610b63e4ed992c3ad326f52e5fa85653efbb9916882b2cca5",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "scripts/deploy.js",
+      "line": 23,
+      "blob_sha256": "cdb329328600334ab199f3e121844d7be026c2d01d78383ad1ba122ade6f6097",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "scripts/deploy.js",
+      "line": 23,
+      "blob_sha256": "5e379cbc30a7037d41f2c1b413f25db42255d6739c49b377f197dc8e085252b6",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "netlify/functions/api.mts",
+      "line": 60,
+      "blob_sha256": "28edb71adc5f2773e01304eb2f2aae751ed2533ea05aca3d98f86eff03965b56",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": ".netlify/functions/api.zip!netlify/functions/api.mjs",
+      "line": 60,
+      "blob_sha256": "7d4354990a8f1b6daed8f1beec38e007379714a8479f2ab1cb4e70d95d831398",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required.",
+      "container_sha256": "8df2d0c024a4de292487b96e4afa0c0ebfbb07b4355c3b4e335af0f361f72ef2"
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": ".env.example",
+      "line": 4,
+      "blob_sha256": "b6d12c728de0aac8b0bc6239e53aa8088c1431bcb4f9a3d61e5e8a2df1c7c400",
+      "reason": "Reviewed QARBI source contains only documented Gemini placeholder at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "server.ts",
+      "line": 18,
+      "blob_sha256": "bc6456a02f21ef638aa06a6099aa082bb316859702df1f260615255690ee7d20",
+      "reason": "Reviewed QARBI source contains only runtime environment lookup at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "README.md",
+      "line": 141,
+      "blob_sha256": "f8054977ca30d03422ef45158414486e5d387d9e49e94b45dde2a93e7703b741",
+      "reason": "Reviewed QARBI source contains only documented Gemini placeholder at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "assets/index-CbuseTn2.js",
+      "line": 292,
+      "blob_sha256": "21e028830ffb6291f1df8e082888b63a632294bd40b695158df865245a714f9a",
+      "reason": "Reviewed QARBI source contains only runtime key comparison, runtime key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "assets/index-Bmoa17JZ.js",
+      "line": 297,
+      "blob_sha256": "1e464c3df284e7272ee5e4a8d2747522b82c2f636a471e77039474523b324281",
+      "reason": "Reviewed QARBI source contains only runtime key comparison, runtime key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "assets/index-hFRNLedB.js",
+      "line": 297,
+      "blob_sha256": "00eee1ada7689cbd6c7f419cb3d484ff1b2809511f437819c45447db9a404b91",
+      "reason": "Reviewed QARBI source contains only runtime key comparison, runtime key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "assets/index-PdoK5eqR.js",
+      "line": 292,
+      "blob_sha256": "8684f53a2e3d5eb6c8b35f82ee878a70c453db5e21ff93a3c76258ed83fbd2fd",
+      "reason": "Reviewed QARBI source contains only runtime key comparison, runtime key property access at this finding location; no literal credential. Exact whole-source hash required."
+    },
+    {
+      "rule": "qmoosa-credential-url",
+      "path": "test/backend-security.test.ts",
+      "line": 75,
+      "blob_sha256": "85b38b50f78c4d46a85edce423b7b0bcc7f69ddce779e9ac11763ac5f263ec2c",
+      "reason": "Reviewed negative operator-RPC test uses fixed dummy credentials on reserved example.invalid and verifies rejection before network probing."
     }
   ]
 }
