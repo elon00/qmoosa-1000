@@ -40,13 +40,17 @@ New default-branch CI config defects observed in meshgate-gate, interledger-gate
 
 [Hybrid TLS engine draft PR #2](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/pull/2) is still open and unmerged at head ffc39df0a9f044b367c13ef588b772174e71cd6c. [Adversarial run #40162001709](https://github.com/elon00/qmoosa-pqc-hybrid-tls-engine/actions/runs/40162001709) failed: two separate Node processes reused the same outbound AES-GCM key/IV; the second accepted it, whereas the test expected TRAFFIC_KEY_IV_REUSE. The current registry is process-local. Preserve the failing regression. Require durable uniqueness or fail-closed disablement of the deprecated raw adapter, crash/restart and multi-worker evidence, and independent cryptographic review before security acceptance. Do not extrapolate this raw-adapter finding to authenticated native Node/OpenSSL TLS without evidence.
 
+## Fresh default-HEAD CI sample
+
+Rechecked all 15 previously documented main HEAD commit SHAs (five each: hybrid TLS, Groth16, SLH-DSA) using owner-scoped recent commit reads. All 15 matched the prior SHA in [the sample evidence](CURRENT_HEAD_CI_SAMPLE_15_2026-10-25.md). Re-fetched all 15 cited workflow runs' jobs: each returned completed/SUCCESS. This is current-HEAD workflow evidence for this limited sample, not implementation/security acceptance. The Batch 14 failing draft PR remains a separate gate.
+
 ## Independent acceptance gates
 
 | Category | Current evidence |
 |---|---|
 | CREATED | 811/1,000 conditional cumulative identity lower bound (796 previous + 15 new), not exhaustive |
 | IMPLEMENTED | Portfolio-wide independently verified count unavailable; limited offline checker proposed in draft PR |
-| CI_VERIFIED (current default HEAD) | 15 previously documented sample repositories; not freshly rechecked this iteration |
+| CI_VERIFIED (current default HEAD) | 15 sampled repositories freshly rechecked: latest commit SHA unchanged and matching prior run jobs completed SUCCESS |
 | SECURITY_APPROVED | 0 independently evidenced |
 | DEPLOYMENT_READY | 0 independently evidenced |
 | Production-certified | 0 independently evidenced |
