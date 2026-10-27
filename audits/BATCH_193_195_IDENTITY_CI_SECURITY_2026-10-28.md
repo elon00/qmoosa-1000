@@ -55,3 +55,8 @@ The 15 sampled TLS/Groth16/SLH-DSA `main` branch HEAD SHAs in [previous sample](
 3. Remediate ZKReg, AutoFX, Interledger and RTGSClear gates using actual logs, not fabricated PASS assertions.
 4. Reconcile remaining 174 approved identities with complete owner inventory; clarify public/private mismatch before any provisioning.
 5. No force-push, merge, public testnet/mainnet deploy, paid resource use, secret access, or bypass of security gates.
+
+
+## Post-checkpoint PR-head CI recheck (2026-10-28)
+
+Both Multinet Gate workflows completed **SUCCESS** at the same PR head `911c544f70abc38824b92ac8403a2c8943808fec`: [offline regression #40597728349](https://github.com/elon00/multinet-gate/actions/runs/40597728349) and [CodeQL #40597728362](https://github.com/elon00/multinet-gate/actions/runs/40597728362). These are **PR-head** successes only, not `main` default-HEAD acceptance or security certification. Coordinator PR #12 workflow must be checked separately; no claim of coordinator success is made here.
