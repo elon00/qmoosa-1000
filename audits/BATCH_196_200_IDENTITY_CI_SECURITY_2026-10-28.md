@@ -61,3 +61,12 @@ Portfolio-wide IMPLEMENTED count remains unverified. Independently evidenced SEC
 5. Address AutoFX, Interledger and RTGSClear gate failures with real logs and implementation-coupled tests.
 
 No force-push, merge, public testnet/mainnet deployment, paid operations, gas/cycles, secrets or security gate bypass. Mission IN PROGRESS.
+
+
+## Post-checkpoint verified PR-head CI and new TLS tests blocker (2026-10-28)
+
+ZKReg Gate PR #1 at latest head `bf0942cd0dc42bc3436cf7b0369598ce5b3c0c21`: [regression #40626817924](https://github.com/elon00/zkreg-gate/actions/runs/40626817924) **SUCCESS**, [Python CodeQL #40626817895](https://github.com/elon00/zkreg-gate/actions/runs/40626817895) **SUCCESS**. This is PR-head-only evidence; the PR remains draft/unmerged and does not validate ZK proofs or certify production security.
+
+Newly inspected [Hybrid TLS Tests PR #1](https://github.com/elon00/qmoosa-pqc-hybrid-tls-tests/pull/1) was merged into `main` despite [PR-head CI #40621348099](https://github.com/elon00/qmoosa-pqc-hybrid-tls-tests/actions/runs/40621348099) **FAILED**. The provenance regressions and recorded archive checks passed, but `npm ci --prefix qmoosa-pqc-hybrid-tls-tests --ignore-scripts --no-audit --no-fund --engine-strict` failed after npm reported a damaged lockfile: `Cannot destructure property 'package' of 'node.target' as it is null.` The earlier three sibling `npm ci` steps passed. The tests repository's `package-lock.json` includes a suspicious nested link to `node_modules/@qmoosa/qmoosa-pqc-hybrid-tls-protocol`; this is a candidate cause, not independently proven. **Do not delete the lockfile, use unpinned npm install, or claim green.** Repair the lockfile using a pinned npm version with the actual vendored tarballs and repeat `npm ci` and all integration/adversarial suites. The new default `main` HEAD remains **NOT CI_VERIFIED** in this checkpoint.
+
+The sampled current-default-HEAD CI count remains **14/15** until a matching successful run for the changed TLS tests HEAD is observed. No security approval.
