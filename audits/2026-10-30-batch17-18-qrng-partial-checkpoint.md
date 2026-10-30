@@ -41,7 +41,7 @@ The five exact canonical names resolve to non-archived, public repositories owne
 [Engine draft PR #1](https://github.com/elon00/qmoosa-qrng-entropy-engine/pull/1), head `f90167afcd9135e70525abe8cd7155e0604c92b9`, adds an **offline Ed25519 signed entropy-beacon verifier**, SHA-256 hash chaining, monotonic sequence/timestamp enforcement, fail-closed checkpoint handling, 12 adversarial tests, CI workflow and a scope-limited security document.
 
 - Local Node 22: `npm run check && npm test` => **12/12 PASS**.
-- GitHub Actions [PR-head run 41045855779](https://github.com/elon00/qmoosa-qrng-entropy-engine/actions/runs/41045855779) was **IN PROGRESS** at the time of this checkpoint. Do **not** count CI_VERIFIED until the exact head SHA succeeds.
+- GitHub Actions [PR-head run 41045855779](https://github.com/elon00/qmoosa-qrng-entropy-engine/actions/runs/41045855779) is **SUCCESS** on exact PR head `f90167afcd9135e70525abe8cd7155e0604c92b9`; the `verify` job, `npm run check`, and `npm test` steps all succeeded. This is **PR-head CI**, not current-default-HEAD CI.
 - This component **does not generate quantum entropy, attest hardware provenance, implement a production beacon, use PQC signatures, or hold FIPS certification**. Its checkpoint is not durable. Whole-repository IMPLEMENTED, SECURITY_APPROVED, and DEPLOYMENT_READY remain unverified/no.
 
 ## P1 security priority — Batch 014
@@ -52,7 +52,7 @@ The five exact canonical names resolve to non-archived, public repositories owne
 
 - **CREATED**: 856/1,000 historical conditional count; 10 additional canonical identities checked here, **not** added to that count without de-duplication.
 - **IMPLEMENTED**: portfolio-wide unknown; one partial Batch 018 PR, not a completed implementation.
-- **CI_VERIFIED**: previously 10/15 sampled default-HEAD successes (Batches 014–016); Batch 017/018 current-HEAD acceptance not established; new PR-head CI pending.
+- **CI_VERIFIED**: previously 10/15 sampled default-HEAD successes (Batches 014–016); Batch 017/018 current-HEAD acceptance not established; new PR-head CI SUCCESS (not default-HEAD CI).
 - **SECURITY_APPROVED / DEPLOYMENT_READY / production-certified**: 0 independently evidenced.
 - **No new repositories provisioned**, no visibility changes, no merges, no paid/cloud deployment, no secrets.
 
