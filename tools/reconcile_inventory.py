@@ -16,16 +16,15 @@ class InventoryError(ValueError):
 
 
 def approved_names(manifest):
-    if not isinstance(manifest, dict) or not isinstance(manifest.get("domains"), list):
-        raise InventoryError("Expected nested QMOOSA source manifest domains")
+    if (not isinstance(manifest, dict) or manifest.get("owner") != OWNER
+            or manifest.get("target_total") != 1000
+            or not isinstance(manifest.get("repositories"), list)):
+        raise InventoryError("Expected canonical v3 owner manifest with 1000 repositories")
     names = []
-    for domain in manifest["domains"]:
-        for batch in domain["batches"]:
-            for repo in batch["repositories"]:
-                name = repo["name"]
-                if not isinstance(name, str) or not name:
-                    raise InventoryError("Invalid canonical name")
-                names.append(name)
+    for row in manifest["repositories"]:
+        if not isinstance(row, dict) or not isinstance(row.get("name"), str) or not row["name"]:
+            raise InventoryError("Invalid canonical name")
+        names.append(row["name"])
     if len(names) != 1000 or len(set(names)) != 1000:
         raise InventoryError("Canonical manifest must have exactly 1000 unique names")
     return set(names)
@@ -109,7 +108,7 @@ def reconcile(manifest, inventory):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--manifest", default="catalog/sources/qmoosa-1000-manifest.json")
+    p.add_argument("--manifest", default="catalog/canonical.json")
     p.add_argument("--inventory", required=True, help="JSON from gh api --paginate --slurp, or JSONL")
     p.add_argument("--output", help="Optional local JSON checkpoint path")
     args = p.parse_args(argv)
