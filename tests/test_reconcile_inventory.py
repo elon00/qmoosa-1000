@@ -10,8 +10,8 @@ SPEC.loader.exec_module(mod)
 
 
 def manifest():
-    return {"domains": [{"batches": [{"repositories": [
-        {"name": f"qmoosa-approved-{i:04d}"} for i in range(1000)]}]}]}
+    return {"owner": "elon00", "target_total": 1000, "repositories": [
+        {"name": f"qmoosa-approved-{i:04d}"} for i in range(1000)]}
 
 
 def repo(name="qmoosa-approved-0000", rid=123, owner="elon00", fork=False):
@@ -62,7 +62,7 @@ class ReconcileTests(unittest.TestCase):
 
     def test_manifest_duplicate_rejected(self):
         m = manifest()
-        m["domains"][0]["batches"][0]["repositories"][1]["name"] = "qmoosa-approved-0000"
+        m["repositories"][1]["name"] = "qmoosa-approved-0000"
         with self.assertRaises(mod.InventoryError):
             mod.approved_names(m)
 
