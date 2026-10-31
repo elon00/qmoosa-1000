@@ -5943,32 +5943,32 @@
       "template": "basic"
     },
     {
-      "description": "QMOOSA-1000 | Batch 199 | Central Bank Digital Currency (CBDC) Interop Rail | protocol",
-      "name": "qmoosa-settle-cbdc-interop-protocol",
+      "description": "QMOOSA-1000 | Batch 199 | Cryptocurrency Token Interop Rail | protocol",
+      "name": "qmoosa-settle-crypto-token-interop-protocol",
       "private": true,
       "template": "basic"
     },
     {
-      "description": "QMOOSA-1000 | Batch 199 | Central Bank Digital Currency (CBDC) Interop Rail | engine",
-      "name": "qmoosa-settle-cbdc-interop-engine",
+      "description": "QMOOSA-1000 | Batch 199 | Cryptocurrency Token Interop Rail | engine",
+      "name": "qmoosa-settle-crypto-token-interop-engine",
       "private": true,
       "template": "basic"
     },
     {
-      "description": "QMOOSA-1000 | Batch 199 | Central Bank Digital Currency (CBDC) Interop Rail | sdk",
-      "name": "qmoosa-settle-cbdc-interop-sdk",
+      "description": "QMOOSA-1000 | Batch 199 | Cryptocurrency Token Interop Rail | sdk",
+      "name": "qmoosa-settle-crypto-token-interop-sdk",
       "private": true,
       "template": "basic"
     },
     {
-      "description": "QMOOSA-1000 | Batch 199 | Central Bank Digital Currency (CBDC) Interop Rail | dashboard",
-      "name": "qmoosa-settle-cbdc-interop-dashboard",
+      "description": "QMOOSA-1000 | Batch 199 | Cryptocurrency Token Interop Rail | dashboard",
+      "name": "qmoosa-settle-crypto-token-interop-dashboard",
       "private": true,
       "template": "basic"
     },
     {
-      "description": "QMOOSA-1000 | Batch 199 | Central Bank Digital Currency (CBDC) Interop Rail | tests",
-      "name": "qmoosa-settle-cbdc-interop-tests",
+      "description": "QMOOSA-1000 | Batch 199 | Cryptocurrency Token Interop Rail | tests",
+      "name": "qmoosa-settle-crypto-token-interop-tests",
       "private": true,
       "template": "basic"
     },
