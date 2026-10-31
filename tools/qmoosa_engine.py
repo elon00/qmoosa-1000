@@ -19,6 +19,10 @@ from urllib.request import Request, build_opener, HTTPRedirectHandler
 API = "https://api.github.com"
 API_VERSION = "2026-03-10"
 MAX_REPOS = 1000
+EXCLUDED_ASSET = re.compile(
+    r"cbdc|cbcd|central[\s_-]*bank[\s_-]*digital[\s_-]*currenc(?:y|ies)|digital[\s_-]*rupee",
+    re.IGNORECASE,
+)
 
 
 class Error(Exception):
@@ -72,6 +76,16 @@ def save_json(path, data):
 def validate(raw):
     if not isinstance(raw, dict):
         raise Error("Manifest must be a JSON object.")
+    def check_scope(value):
+        if isinstance(value, str) and EXCLUDED_ASSET.search(value):
+            raise Error("Manifest contains an excluded central-bank digital currency reference.")
+        if isinstance(value, dict):
+            for item in value.values():
+                check_scope(item)
+        elif isinstance(value, list):
+            for item in value:
+                check_scope(item)
+    check_scope(raw)
     allowed = {"schema_version", "example", "owner", "target_total", "repositories"}
     if set(raw) - allowed:
         raise Error("Unknown manifest fields; explicitly convert the source schema first.")
