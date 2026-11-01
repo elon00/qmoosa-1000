@@ -11,12 +11,13 @@ SPEC.loader.exec_module(mod)
 
 def manifest():
     return {"owner": "elon00", "target_total": 1000, "repositories": [
-        {"name": f"qmoosa-approved-{i:04d}"} for i in range(1000)]}
+        {"name": f"qmoosa-approved-{i:04d}", "private": True} for i in range(1000)]}
 
 
 def repo(name="qmoosa-approved-0000", rid=123, owner="elon00", fork=False):
     return {"id": rid, "name": name, "full_name": owner + "/" + name,
-            "owner": {"login": owner}, "fork": fork}
+            "owner": {"login": owner}, "fork": fork,
+            "private": False, "visibility": "public"}
 
 
 class ReconcileTests(unittest.TestCase):
@@ -71,6 +72,66 @@ class ReconcileTests(unittest.TestCase):
         data = [repo(), repo("qmoosa-approved-0001", 124)]
         self.assertEqual(mod.load_inventory(json.dumps([data])), data)
         self.assertEqual(mod.load_inventory("\n".join(map(json.dumps, data))), data)
+
+    def test_public_visibility_mismatch_reported(self):
+        r = mod.reconcile(manifest(), [repo()])
+        self.assertEqual(r["observed_exact_public"], 1)
+        self.assertEqual(r["observed_exact_private"], 0)
+        self.assertEqual(r["visibility_mismatches_vs_manifest_defaults"], [
+            {"name": "qmoosa-approved-0000", "repository_id": 123,
+             "manifest_default": "private", "observed": "public"}])
+        self.assertTrue(r["manifest_visibility_defaults_are_not_independent_owner_approval"])
+
+    def test_private_visibility_matches_manifest_default(self):
+        row = repo()
+        row["private"], row["visibility"] = True, "private"
+        r = mod.reconcile(manifest(), [row])
+        self.assertEqual(r["observed_exact_private"], 1)
+        self.assertEqual(r["visibility_mismatches_vs_manifest_defaults"], [])
+
+    def test_conflicting_private_and_visibility_rejected(self):
+        row = repo()
+        row["private"] = True
+        with self.assertRaises(mod.InventoryError):
+            mod.reconcile(manifest(), [row])
+
+    def test_missing_visibility_rejected(self):
+        row = repo()
+        del row["private"]
+        del row["visibility"]
+        with self.assertRaises(mod.InventoryError):
+            mod.reconcile(manifest(), [row])
+
+    def test_duplicate_identity_conflicting_visibility_rejected(self):
+        row = repo()
+        other = repo()
+        other["private"], other["visibility"] = True, "private"
+        with self.assertRaises(mod.InventoryError):
+            mod.reconcile(manifest(), [row, other])
+
+    def test_manifest_missing_visibility_default_rejected(self):
+        m = manifest()
+        del m["repositories"][0]["private"]
+        with self.assertRaises(mod.InventoryError):
+            mod.reconcile(m, [repo()])
+
+    def test_visibility_only_metadata_accepted(self):
+        row = repo()
+        del row["private"]
+        r = mod.reconcile(manifest(), [row])
+        self.assertEqual(r["observed_exact_public"], 1)
+
+    def test_invalid_visibility_label_rejected(self):
+        row = repo()
+        row["visibility"] = "internal"
+        with self.assertRaises(mod.InventoryError):
+            mod.reconcile(manifest(), [row])
+
+    def test_non_boolean_private_flag_rejected(self):
+        row = repo()
+        row["private"] = "false"
+        with self.assertRaises(mod.InventoryError):
+            mod.reconcile(manifest(), [row])
 
     def test_no_claimed_certification(self):
         r = mod.reconcile(manifest(), [repo()])

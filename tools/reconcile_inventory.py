@@ -49,10 +49,32 @@ def load_inventory(text):
     return rows
 
 
+def observed_visibility(row):
+    """Require consistent public/private metadata; never guess missing visibility."""
+    flag = row.get("private")
+    label = row.get("visibility")
+    if flag is not None and type(flag) is not bool:
+        raise InventoryError("Invalid private flag")
+    if label is not None and label not in ("public", "private"):
+        raise InventoryError("Invalid or unsupported repository visibility")
+    if flag is None and label is None:
+        raise InventoryError("Missing authoritative visibility metadata")
+    derived = ("private" if flag else "public") if flag is not None else label
+    if label is not None and label != derived:
+        raise InventoryError("Conflicting private and visibility fields")
+    return derived
+
+
 def reconcile(manifest, inventory):
     canonical = approved_names(manifest)
+    expected_visibility = {}
+    for item in manifest["repositories"]:
+        if type(item.get("private")) is not bool:
+            raise InventoryError("Canonical manifest requires a private boolean")
+        expected_visibility[item["name"]] = "private" if item["private"] else "public"
     ids = {}
     names = {}
+    visibilities = {}
     skipped_forks = 0
     skipped_other_owners = 0
     for row in inventory:
@@ -70,6 +92,7 @@ def reconcile(manifest, inventory):
         if row["fork"]:
             skipped_forks += 1
             continue
+        visibility = observed_visibility(row)
         name, rid = row.get("name"), row.get("id")
         if not isinstance(name, str) or not name or type(rid) is not int or rid <= 0:
             raise InventoryError("Invalid repository name or stable numeric ID")
@@ -80,17 +103,31 @@ def reconcile(manifest, inventory):
             raise InventoryError("Stable repository ID maps to multiple names")
         if name in names and names[name] != rid:
             raise InventoryError("Repository name maps to multiple stable IDs")
+        if name in visibilities and visibilities[name] != visibility:
+            raise InventoryError("Repository identity has conflicting visibility records")
         ids[rid] = name
         names[name] = rid
+        visibilities[name] = visibility
     exact = sorted(canonical.intersection(names))
     missing = sorted(canonical.difference(names))
     unrelated = sorted(set(names).difference(canonical))
+    exact_public = [name for name in exact if visibilities[name] == "public"]
+    exact_private = [name for name in exact if visibilities[name] == "private"]
+    visibility_mismatches = [
+        {"name": name, "repository_id": names[name],
+         "manifest_default": expected_visibility[name], "observed": visibilities[name]}
+        for name in exact if visibilities[name] != expected_visibility[name]
+    ]
     return {
         "owner": OWNER,
         "manifest_unique": 1000,
         "inventory_complete": False,
         "inventory_scope": "observed_records_only; not proof of exhaustive owner pagination",
         "created_exact_observed_lower_bound": len(exact),
+        "observed_exact_public": len(exact_public),
+        "observed_exact_private": len(exact_private),
+        "visibility_mismatches_vs_manifest_defaults": visibility_mismatches,
+        "manifest_visibility_defaults_are_not_independent_owner_approval": True,
         "exact_matches": [{"name": name, "repository_id": names[name]} for name in exact],
         "unmatched_manifest_names_not_proven_missing": missing,
         "other_owned_original_repos_excluded": unrelated,
