@@ -483,6 +483,20 @@
       "line": 75,
       "blob_sha256": "85b38b50f78c4d46a85edce423b7b0bcc7f69ddce779e9ac11763ac5f263ec2c",
       "reason": "Reviewed negative operator-RPC test uses fixed dummy credentials on reserved example.invalid and verifies rejection before network probing."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "src/pqc_layer.py",
+      "line": 78,
+      "blob_sha256": "77f1c7f2afece877adea21a15f0be66277d5f4f4f76e3a28a987de6c96f96225",
+      "reason": "Reviewed India prototype runtime keyword argument: the value comes from an in-memory key buffer, not a literal credential. It is sent only through a captured local process pipe. Exact source bytes and line are required."
+    },
+    {
+      "rule": "qmoosa-credential-assignment",
+      "path": "src/pqc_layer.py",
+      "line": 84,
+      "blob_sha256": "77f1c7f2afece877adea21a15f0be66277d5f4f4f76e3a28a987de6c96f96225",
+      "reason": "Reviewed India prototype runtime keyword argument: the value comes from an in-memory key buffer, not a literal credential. It is sent only through a captured local process pipe. Exact source bytes and line are required."
     }
   ]
 }
