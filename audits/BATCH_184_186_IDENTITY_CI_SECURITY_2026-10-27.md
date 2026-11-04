@@ -2,7 +2,7 @@
 
 ## Authority and count discipline
 
-Approved manifest: `catalog/canonical.json` (Git blob `0f025faae374aaf8388e5e0652df994bbd20d00a`), owner `elon00`, 1,000 unique names, all `private: true`. These 15 canonical indices (916–930) were matched to original owner `elon00` repositories via exact `QMOOSA-0NNN` architecture identifiers, component roles, GitHub stable IDs, and `fork: false` repository metadata. Every observed repository is **public**, contrary to manifest privacy policy. No visibility changes authorized or made.
+Canonical manifest: `catalog/canonical.json` (Git blob `0f025faae374aaf8388e5e0652df994bbd20d00a`), owner `elon00`, 1,000 unique names, with `private: true` recorded as a planning value. These 15 canonical indices (916–930) were matched to original owner `elon00` repositories via exact `QMOOSA-0NNN` architecture identifiers, component roles, GitHub stable IDs, and `fork: false` repository metadata. Every observed repository is **public**; the manifest visibility setting is a planning value, not independent policy approval. No visibility changes authorized or made.
 
 | Index | Approved canonical name | GitHub repository | Stable ID |
 |---:|---|---|---:|
@@ -37,6 +37,6 @@ These are **identity matches only**, not implementations or security acceptance.
 
 ## Fresh coordinator and gate observations
 
-[Coordinator PR #7](https://github.com/elon00/qmoosa-1000/pull/7) was merged at 2026-10-27T03:53:43Z. [Main-head security guard #40446925900](https://github.com/elon00/qmoosa-1000/actions/runs/40446925900) succeeded at `64c6a799ee886e852bd920f476ebd94717f0c556`. [pipedeploy-gate CodeQL #40445363081](https://github.com/elon00/pipedeploy-gate/actions/runs/40445363081) completed SUCCESS on PR head `f2b11caca22083197eb168dc339c4aa44bb228e9`, resolving the prior *pending* observation. This is not default-HEAD verification.
+[Coordinator PR #7](https://github.com/elon00/qmoosa-1000/pull/7) was merged at 2026-10-27T03:53:43Z. [Main-head security guard #40446925900](https://github.com/elon00/qmoosa-1000/actions/runs/40446925900) succeeded at `64c6a799ee886e852bd920f476ebd94717f0c556`, which does not verify PR #7 merge commit `fa5e8932412f5d6057e4e2d6b59c12242c0fb234`. [pipedeploy-gate CodeQL #40445363081](https://github.com/elon00/pipedeploy-gate/actions/runs/40445363081) completed SUCCESS on PR head `f2b11caca22083197eb168dc339c4aa44bb228e9`, resolving the prior *pending* observation. This is not default-HEAD verification.
 
 No new repositories provisioned, no merges or deployments performed by this checkpoint, no paid services/gas/cycles, no production certification. IMPLEMENTED portfolio-wide count remains unverified; 15 prior sampled default-HEAD CI successes are historical evidence, not refreshed here; SECURITY_APPROVED and DEPLOYMENT_READY have zero independently accepted evidence.
