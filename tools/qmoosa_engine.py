@@ -235,6 +235,45 @@ def inventory(api, owner, public=False):
     return sorted(rows, key=lambda r: r["name"].lower())
 
 
+
+def canonical_inventory(manifest, rows):
+    """Fail-closed canonical identity snapshot; unrelated owner repositories are ignored."""
+    if not isinstance(rows, list):
+        raise Error("Owner inventory must be a list.")
+    expected = {row["name"]: row for row in manifest["repositories"]}
+    found = {}
+    ids = set()
+    for repo in rows:
+        if not isinstance(repo, dict) or not isinstance(repo.get("name"), str):
+            raise Error("Malformed owner inventory row.")
+        name = repo["name"].lower()
+        if name not in expected:
+            continue
+        if name in found:
+            raise Error("Duplicate canonical repository name: " + name)
+        repo_id = repo.get("id")
+        if type(repo_id) is not int or repo_id <= 0 or repo_id in ids:
+            raise Error("Missing, invalid, or duplicate canonical repository ID: " + name)
+        if type(repo.get("private")) is not bool or type(repo.get("fork")) is not bool:
+            raise Error("Missing or nonboolean canonical visibility/fork metadata: " + name)
+        if repo["fork"]:
+            raise Error("Canonical repository is a fork: " + name)
+        if repo["private"] != expected[name]["private"]:
+            raise Error("Canonical visibility mismatch; owner policy approval required: " + name)
+        owner = repo.get("owner")
+        if owner is not None and (
+                not isinstance(owner, dict) or not isinstance(owner.get("login"), str)
+                or owner["login"].lower() != manifest["owner"]):
+            raise Error("Canonical repository owner mismatch: " + name)
+        full_name = repo.get("full_name")
+        if full_name is not None and (
+                not isinstance(full_name, str)
+                or full_name.lower() != manifest["owner"] + "/" + name):
+            raise Error("Canonical repository full_name mismatch: " + name)
+        ids.add(repo_id)
+        found[name] = dict(id=repo_id, private=repo["private"], fork=False)
+    return found
+
 def engine_hash():
     return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 
@@ -242,7 +281,7 @@ def engine_hash():
 def make_plan(manifest, current=None):
     manifest = validate(manifest)
     offline = current is None
-    existing = {r["name"].lower(): r for r in (current or [])}
+    existing = canonical_inventory(manifest, current or [])
     actions = []
     for row in manifest["repositories"]:
         old = existing.get(row["name"])
@@ -379,7 +418,9 @@ def apply_plan(plan, state_path, api, confirm_owner, limit=10):
     if type(limit) is not int or not 1 <= limit <= MAX_REPOS:
         raise Error("--limit must be from 1 to 1000.")
     # Recheck authentication and current inventory before any mutation.
-    inventory(api, manifest["owner"])
+    fresh_inventory = inventory(api, manifest["owner"])
+    if canonical_inventory(manifest, fresh_inventory) != canonical_inventory(manifest, plan["inventory"] or []):
+        raise Error("Canonical inventory drifted since planning; review a new plan.")
     state_path = Path(state_path)
     with journal_lock(state_path):
         state = read_json(state_path) if state_path.exists() else dict(plan_id=plan["plan_id"], repositories={})
@@ -403,9 +444,7 @@ def apply_plan(plan, state_path, api, confirm_owner, limit=10):
                     initialize(api, prefix, row, entry, files, checkpoint)
                     continue
             elif repo:
-                state["repositories"][name] = dict(status="skipped-existing", observed_id=repo["id"])
-                checkpoint()
-                continue
+                raise Error("Unplanned repository appeared after inventory check; stop and re-plan: " + name)
             if touched >= limit:
                 break
             touched += 1

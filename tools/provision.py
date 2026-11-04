@@ -178,7 +178,9 @@ def run(api, work, limit):
         raise q.Error("Canonical manifest and reviewed plan differ.")
     if not 1 <= limit <= 1000:
         raise q.Error("limit must be from 1 to 1000.")
-    inventory = q.inventory(api,"elon00")
+    current_inventory = q.inventory(api,"elon00")
+    if q.canonical_inventory(manifest, current_inventory) != q.canonical_inventory(manifest, plan["inventory"] or []):
+        raise q.Error("Canonical inventory drifted since planning; review a new plan.")
     folder = work/".local"
     folder.mkdir(exist_ok=True)
     state_path = folder/"provisioning-state.json"
@@ -226,7 +228,7 @@ def run(api, work, limit):
                         entry.update(repo_id=repo["id"],status="verified",reconciled_after_attempt=True,
                                      created_response=False,verified_at=q.stamp())
                     else:
-                        state["repositories"][name] = dict(status="existing",observed_id=repo["id"])
+                        raise q.Error("Unplanned canonical repository appeared; stop and re-plan: " + name)
                     checkpoint()
                     continue
                 if not entry or not entry.get("repo_id"):
