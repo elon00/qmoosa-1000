@@ -49,7 +49,7 @@ created by this initialization run. A basic scaffold is not a finished cryptocur
 
 - catalog/canonical.json: canonical names and planning settings.
 - catalog/source-map.json: domains, batches, families, and roles.
-- catalog/execution-plan.json: the reviewed 1,000-name create/skip plan.
+- catalog/execution-plan.json: the current 1,000-name offline preview; it cannot authorize creation.
 - catalog/reference-comparison.json: differences among the reference catalogs.
 - project-template/: the exact starter files copied into new repositories.
 
@@ -63,3 +63,10 @@ Default preview:
 The original initializer is retained for reproducibility. Its private/scaffold settings
 describe the creation plan, not current account visibility. Current hardening does not
 create another set of repositories. Use the security guard above for ongoing checks.
+
+## Cryptocurrency scope and plan refresh
+
+Manifest validation rejects excluded central-bank asset references before planning or execution. Cryptocurrency tokens, wallets, stablecoins and decentralized finance remain supported.
+
+The checked-in execution plan is regenerated from the current canonical cryptocurrency catalog as an offline preview, including its manifest checksum, scaffold hashes, engine checksum and plan ID. It carries no current inventory or creation authorization. Generate and review a fresh live plan against current inventory before provisioning; historical approvals and provisioning journals cannot be reused with this plan.
+
