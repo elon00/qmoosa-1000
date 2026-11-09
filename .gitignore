@@ -15,3 +15,7 @@ node_modules/
 *.p12
 *.pfx
 *.keystore
+
+# Private owner-inventory metadata: never stage local exports
+owner-repos.local.json
+owner-reconciliation.local.json
