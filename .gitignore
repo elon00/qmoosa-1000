@@ -15,3 +15,6 @@ node_modules/
 *.p12
 *.pfx
 *.keystore
+
+# Lean 4 build artifacts
+lean_verify/.lake/
